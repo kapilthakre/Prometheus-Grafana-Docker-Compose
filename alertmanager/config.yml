@@ -10,4 +10,4 @@ receivers:
     smarthost: smtp.gmail.com:587
     auth_username: kapil.thakre.dev@gmail.com
     auth_identity: kapil.thakre.dev@gmail.com
-    auth_password: Pixel@641995
+    auth_password: "Enter password"
