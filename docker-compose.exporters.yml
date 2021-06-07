@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+   cadvisor:
+    image: google/cadvisor:latest
+    container_name: monitoring_cadvisor
+    restart: unless-stopped
+    user: root
+    volumes:
+     #- /var/run/docker.sock:/var/run/docker.sock:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+ #  privileged: true
+    devices:
+      - /dev/kmsg
+    ports:
+      - 8080:8080
+
+
+   node-exporter:
+    image: prom/node-exporter:latest
+    container_name: monitoring_node_exporter
+    restart: unless-stopped
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/host'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    pid: host
+    volumes:
+      - '/:/host:ro,rslave'
+    network_mode: host
+    ports:
+     - 9100:9100
