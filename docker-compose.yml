@@ -1,0 +1,59 @@
+version: "3"
+services:
+
+
+   prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus/
+      # If you want to stopre prometheus data then uncomment this line
+      # - ./data/prometheus/data/prom_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    ports:
+      - 9090:9090
+
+
+
+   grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    volumes:
+     # - grafana:/var/lib/grafana
+     # If you have a templete of grafana dashboard then put that template this folder other wise you can remove this line same with dashboard
+       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+     # - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - 3000:3000
+
+
+
+   #If you dont want to use alert manager of prometheus remove this line
+   alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    expose:
+      - 9093
+
+
+#volumes:
+#  grafana:

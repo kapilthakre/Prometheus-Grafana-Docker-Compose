@@ -1,0 +1,13 @@
+route:
+ #group_by: [Alertname]
+  receiver: email-me
+
+receivers:
+- name: email-me
+  email_configs:
+  - to: kapilthakre64@gmail.com
+    from: kapil.thakre.dev@gmail.com
+    smarthost: smtp.gmail.com:587
+    auth_username: kapil.thakre.dev@gmail.com
+    auth_identity: kapil.thakre.dev@gmail.com
+    auth_password: Pixel@641995
